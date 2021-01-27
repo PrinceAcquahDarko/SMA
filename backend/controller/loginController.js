@@ -13,7 +13,7 @@ function loginController(){
         try{
             await client.connect();
             const db = client.db(dbName);
-            let username = await db.collection('register').findOne({username: credentials.username})
+            let username = await db.collection('register').findOne({email: credentials.email})
             if(!username)
             return res.status(401).send({message: 'invalid username please try again'})
             bcrypt.compare(credentials.password, username.password, (err, isMatch) => {

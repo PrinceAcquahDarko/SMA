@@ -1,13 +1,12 @@
 let express = require('express');
+let cors = require('cors')
 let app = express();
 
 let loginRouter = require('./routes/loginRoutes')()
 let registerRouter = require('./routes/registerRoutes')()
 
-app.get('/', (req, res) => {
-    res.send('hello world');
-})
 app.use(express.json())
+app.use(cors())
 app.use('/login', loginRouter);
 app.use('/register', registerRouter);
 
