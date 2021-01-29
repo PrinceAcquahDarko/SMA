@@ -41,7 +41,6 @@ function registerController(){
 }
 
 
-
 function userData(args, password){
     let data = {
         firstname: args.firstname,
