@@ -22,14 +22,12 @@ function loginController(){
                 
                 // let payload = {sub: username.id}
                 let token = jwt.sign({id:username._id}, config.secret)
-                res.status(200).send({auth: true, token, position:username.position})
+                res.status(200).send({auth: true, token, position:username.position, data:username.data})
             })  
         }catch(err){
             res.sendStatus(400);
         }
-
     }
-
     return {post}
 }
 

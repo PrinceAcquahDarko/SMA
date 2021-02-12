@@ -1,4 +1,4 @@
-const {MongoClient} = require('mongodb')
+const {MongoClient, ObjectID} = require('mongodb')
 let bcrypt = require('bcryptjs')
 let jwt = require('jsonwebtoken');
 let config = require('../config');
@@ -36,8 +36,41 @@ function registerController(){
         }
         next();
     }
+     async function update(req, res){
+        try{
+            await client.connect();
+            const db = client.db(dbName);
+            const data = req.body
+            // const id = ObjectID('601de19ce95fbb1d98b49a39')
+            const id2 = ObjectID('6020484e64175c31887d3e07')
+            let registeredData = await db.collection('register').updateOne({_id: id2}, { $set: { data }})
+            // let registeredData = await db.collection('register').findOne({_id: id})
 
-    return {post, validate}
+            res.send(registeredData)
+            console.log(registeredData)
+           
+        }catch(error){
+            console.log(error)
+        };
+
+    }
+
+    async function get(req, res){
+        try{
+            await client.connect();
+            const db = client.db(dbName);
+            const data = await db.collection('register').find( {} );
+            const items = await data.toArray()
+            console.log(items)
+            // for temporal usage
+           
+            res.send(items)
+       }catch(err){
+           res.send(err)
+       }   
+    }
+
+    return {post, validate, update, get}
 }
 
 

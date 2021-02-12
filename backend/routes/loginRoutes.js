@@ -10,4 +10,4 @@ function Router(){
     return loginRouter
 }
 
-module.exports = Router
+module.exports = Router()
