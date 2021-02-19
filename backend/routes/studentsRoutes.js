@@ -7,6 +7,8 @@ function router(){
     studentsRouter.route('/')
         .get(studentsController.get)
         .post(studentsController.post)
+    studentsRouter.route('/marks')
+        .post(studentsController.postMarks)
     return studentsRouter
 }
 
