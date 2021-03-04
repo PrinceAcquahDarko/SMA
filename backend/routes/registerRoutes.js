@@ -8,7 +8,7 @@ function Router(){
     registerRouter.route('/')
         .post(registerController.post)
         .get(registerController.get)
-        .put(registerController.update)
+        .put(registerController.authorization, registerController.update)
     return registerRouter
 }
 

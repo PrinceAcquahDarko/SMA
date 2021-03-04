@@ -23,7 +23,6 @@ function studentsController(){
             await client.connect();
             const db = client.db(dbName);
             let studentsData = await db.collection(data).insertOne(req.body)
-            // const items = await studentsData.toArray()
             console.log(studentsData);
             res.send(studentsData)
         }catch(err){
@@ -33,49 +32,19 @@ function studentsController(){
     async function postMarks(req, res){
         let currentClass = req.query.class;
         let subject = req.query.subject
-        // req.body.subject = 'maths';
         let id = ObjectID(req.query.id)
-        // let a ={
-        //     currentClass,
-        //     subject, 
-        //     id
-        // }
-        // console.log(a);
-        // res.send(a);
         try{
             await client.connect();
             const db = client.db(dbName);
-            // let marks = {}
-            // marks[subject] = req.body
-            // let data = {
-            // }
-            // data[subject] = req.body
-            // let data2 = {}
-            // data2[subject] = data
-            // let datas = []
-
-            // let classScore =  subject
-            // let classScore = datas
-            // let examsScore = 'data.' + subject + '.examsScore';
-            // let totalScore = 'data.' + subject + '.totalScore';
-            // let data = [
-
-            // ]
-            // data.push(subject)
-
-            // let prince = {
-            //     data : []
-            // }
-            // prince.data[subject] = req.body
-            // prince.data.push(subject)
-
-            // data.marks[subject] = req.body;
-            // console.log(data)
-            // let data = new marks(req)
-            let insertedMarks = await db.collection(currentClass).updateOne({_id: id}, {$set: {[subject]:  {classScore: req.body.classScore, examScore: req.body.examScore, totalScore: req.body.totalScore}}} ) 
-            // [classScore] : req.body.classScore, [examsScore]: req.body.examScore, [totalScore]: req.body.totalScore
-            console.log(insertedMarks);
-            res.send(insertedMarks);
+            const UsersId = await db.collection('register').findOne({_id: ObjectID(req.query.teachers_Id)})
+            if (UsersId.position === 'teacher'){
+                let insertedMarks = await db.collection(currentClass).updateOne({_id: id}, {$set: {[subject]:  {classScore: req.body.classScore, examScore: req.body.examScore, totalScore: req.body.totalScore}}} ) 
+                res.send(insertedMarks);
+            }
+            
+           
+            return res.send('You are not allowed to enter mafks');
+           
 
         }catch(err){
             console.log(err)
@@ -83,7 +52,26 @@ function studentsController(){
 
     }
 
-    return {get, post, postMarks}
+    async function postfees(req, res){
+        let currentClass = req.query.class;
+        let id = ObjectID(req.query.id)
+        try{
+            await client.connect();
+            const db = client.db(dbName);
+            const UsersId = await db.collection('register').findOne({_id: ObjectID(req.query.teachers_Id)})
+            if (UsersId.position === 'account'){
+                let insertedFees = await db.collection(currentClass).updateOne({_id: id}, {$set: {fees: req.body}} ) 
+                return res.send(insertedFees);
+            }
+            
+            return res.send('You are not allowed to enter data');
+
+        }catch(err){
+            console.log(err)
+        }
+    }
+
+    return {get, post, postMarks, postfees}
 }
 
 function marks(args){

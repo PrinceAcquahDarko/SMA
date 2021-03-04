@@ -8,16 +8,8 @@ const client = new MongoClient(url,  { useUnifiedTopology: true } )
 
 function registerController(){
     async function post(req, res){
-        // let userData = {}
         let hashedPassword = bcrypt.hashSync(req.body.passwordGroup.password, 8);
         let users_Data = new userData(req.body, hashedPassword)
-        // userData.firstname = req.body.firstname
-        // userData.lastname = req.body.lastname
-        // userData.email = req.body.email
-        // userData.password = hashedPassword
-        // userData.position = req.body.position
-        // let regCredentials = req.body;
-        // regCredentials.password = hashedPassword
         try{
             await client.connect();
             const db = client.db(dbName);
@@ -38,13 +30,12 @@ function registerController(){
     }
      async function update(req, res){
         try{
+
             await client.connect();
             const db = client.db(dbName);
             const data = req.body
-            // const id = ObjectID('601de19ce95fbb1d98b49a39')
-            const id2 = ObjectID('6020484e64175c31887d3e07')
+            const id2 = ObjectID(req.query.teachers_Id)
             let registeredData = await db.collection('register').updateOne({_id: id2}, { $set: { data }})
-            // let registeredData = await db.collection('register').findOne({_id: id})
 
             res.send(registeredData)
             console.log(registeredData)
@@ -70,7 +61,26 @@ function registerController(){
        }   
     }
 
-    return {post, validate, update, get}
+    function authorization(req, res, next){
+    
+        if(!req.header('Authorization'))
+        return res.send('no token')
+    
+    
+       var token = req.header('Authorization').split(' ')[1]
+       console.log(token, 'from token');
+    
+       jwt.verify(token, config.secret, function(err, decoded){
+           if(err) return res.send('incore tken');
+           console.log(decoded, 'from decoded');
+           req.query.teachers_Id = decoded.id
+       })
+
+       next()
+           
+    }
+
+    return {post, validate, update, get, authorization}
 }
 
 
@@ -85,6 +95,7 @@ function userData(args, password){
 
     return data
 }
+
 
 
 module.exports = registerController()
