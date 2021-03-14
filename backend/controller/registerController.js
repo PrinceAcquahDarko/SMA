@@ -50,6 +50,21 @@ function registerController(){
         try{
             await client.connect();
             const db = client.db(dbName);
+            const id = ObjectID(req.query.teachers_Id)
+            const data = await db.collection('register').find( {_id:id} );
+            const items = await data.toArray()
+            console.log(items)
+            // for temporal usage
+           
+            res.send(items)
+       }catch(err){
+           res.send(err)
+       }   
+    }
+    async function getAllData(req, res){
+        try{
+            await client.connect();
+            const db = client.db(dbName);
             const data = await db.collection('register').find( {} );
             const items = await data.toArray()
             console.log(items)
@@ -60,6 +75,21 @@ function registerController(){
            res.send(err)
        }   
     }
+
+    async function deleteStaff(req, res){
+        try{
+            await client.connect();
+            const db = client.db(dbName);
+            const id = ObjectID(req.query.staffId)
+            const data = await db.collection('register').deleteOne( {_id: id} );
+            // for temporal usage
+           console.log(data)
+            res.send(data)
+       }catch(err){
+           res.send(err)
+       }   
+    }
+
 
     function authorization(req, res, next){
     
@@ -80,7 +110,7 @@ function registerController(){
            
     }
 
-    return {post, validate, update, get, authorization}
+    return {post, validate, update, get, authorization, getAllData, deleteStaff}
 }
 
 

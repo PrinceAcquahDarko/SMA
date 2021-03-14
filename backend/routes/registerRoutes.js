@@ -7,8 +7,11 @@ function Router(){
     registerRouter.use(registerController.validate)
     registerRouter.route('/')
         .post(registerController.post)
-        .get(registerController.get)
+        .get(registerController.authorization, registerController.get)
         .put(registerController.authorization, registerController.update)
+    registerRouter.route('/staff')
+        .get(registerController.getAllData)
+        .delete(registerController.deleteStaff);
     return registerRouter
 }
 
